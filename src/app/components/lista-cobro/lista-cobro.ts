@@ -32,6 +32,7 @@ export class ListaCobroComponent implements OnInit {
     this.cargando = true;
     this.primeraCargaRealizada = true;
 
+    codex/fix-lista-cobro.ts-not-displaying-data-2s3sd9
     this.cobrosService
       .obtenerCobrosPaginados(this.paginaActual, this.tamanoPagina)
       .pipe(
@@ -67,9 +68,46 @@ export class ListaCobroComponent implements OnInit {
           Swal.fire('Error', 'El servidor no respondió', 'error');
         }
       });
+    this.cobrosService.obtenerCobrosPaginados(this.paginaActual, this.tamanoPagina).subscribe({
+      next: (resp: RespuestaCobrosPaginados | any) => {
+        const payload = resp?.data ?? resp?.result ?? resp;
+        const listaCobros = Array.isArray(payload)
+          ? payload
+          : payload?.listacobros ??
+            payload?.listaCobros ??
+            payload?.ListaCobros ??
+            payload?.items ??
+            payload?.Items ??
+            [];
+        const totalRegistros =
+          payload?.totalregistros ??
+          payload?.totalRegistros ??
+          payload?.TotalRegistros ??
+          payload?.total ??
+          payload?.Total ??
+          0;
+
+        const listaNormalizada = Array.isArray(listaCobros)
+          ? listaCobros.map((item) => ({
+              ...item,
+              id: item?.id ?? item?.Id ?? item?.ID,
+              nombre: item?.nombre ?? item?.Nombre ?? item?.NOMBRE,
+              monto: item?.monto ?? item?.Monto ?? item?.MONTO
+            }))
+          : [];
+
+        this.listaCobros = listaNormalizada;
+        this.totalRegistros = Number(totalRegistros) || listaNormalizada.length;
+        this.cargando = false;
+      },
+      error: (err) => {
+        console.error('ERROR EN HTTP:', err);
+        this.cargando = false;
+        Swal.fire('Error', 'El servidor no respondió', 'error');
+      }
+    });
   }
 
-  // Métodos simplificados
   cambiarPagina(n: number) { this.paginaActual = n; this.consultarCobros(); }
   onTamanoChange() { this.paginaActual = 1; this.consultarCobros(); }
   get totalPaginas(): number { return Math.ceil(this.totalRegistros / this.tamanoPagina) || 1; }
