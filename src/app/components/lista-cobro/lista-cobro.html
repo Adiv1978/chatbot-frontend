@@ -1,13 +1,7 @@
 <div class="lista-container">
-  <div style="background: #eee; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc;">
-    <button type="button" (click)="consultarCobros()" style="padding: 15px; background: blue; color: white; cursor: pointer;">
-      TEST: HACER CLIC AQUÍ
-    </button>
-  </div>
-
   <div class="tabla-wrapper" style="position: relative; min-height: 100px;">
     <div *ngIf="cargando" style="background: rgba(0,0,0,0.1); padding: 20px; text-align: center;">
-        <strong>CARGANDO DATOS... POR FAVOR ESPERE</strong>
+      <strong>CARGANDO DATOS... POR FAVOR ESPERE</strong>
     </div>
 
     <table *ngIf="!cargando" border="1" style="width: 100%; margin-top: 10px;">
@@ -20,13 +14,13 @@
       </thead>
       <tbody>
         <tr *ngFor="let c of listaCobros">
-          <td>{{ c.Id || c.id }}</td>
-          <td>{{ c.Nombre || c.nombre }}</td>
-          <td>{{ c.Monto || c.monto }}</td>
+          <td>{{ c.id }}</td>
+          <td>{{ c.nombre }}</td>
+          <td>{{ c.monto }}</td>
         </tr>
         <tr *ngIf="listaCobros.length === 0">
           <td colspan="3" style="text-align: center; padding: 20px;">
-            No hay datos. Presione el botón azul arriba.
+            No hay datos disponibles.
           </td>
         </tr>
       </tbody>
