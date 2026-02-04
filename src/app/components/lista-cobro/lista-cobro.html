@@ -1,45 +1,84 @@
-<div class="lista-container">
-  <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-    <button type="button" (click)="cargarPrimeraPagina()">Cargar página 1</button>
-    <label style="display: flex; gap: 6px; align-items: center;">
-      Líneas por página
-      <input
-        type="number"
-        min="1"
-        [(ngModel)]="tamanoPagina"
-        (ngModelChange)="onTamanoChange()"
-        style="width: 80px;"
-      />
-    </label>
-    <span *ngIf="primeraCargaRealizada">
-      Total páginas: {{ totalPaginas }}
-    </span>
-  </div>
-  <div class="tabla-wrapper" style="position: relative; min-height: 100px;">
-    <div *ngIf="cargando" style="background: rgba(0,0,0,0.1); padding: 20px; text-align: center;">
-      <strong>CARGANDO DATOS... POR FAVOR ESPERE</strong>
+<div class="main-container">
+  
+  <div class="control-panel">
+    <div class="control-group">
+      <button class="btn btn-primary" (click)="cargarPrimeraPagina()">
+        ↻ Recargar Inicio
+      </button>
     </div>
 
-    <table *ngIf="!cargando" border="1" style="width: 100%; margin-top: 10px;">
-      <thead>
-        <tr style="background: #333; color: white;">
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Monto</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let c of listaCobros">
-          <td>{{ c.id }}</td>
-          <td>{{ c.nombre }}</td>
-          <td>{{ c.monto }}</td>
-        </tr>
-        <tr *ngIf="listaCobros.length === 0">
-          <td colspan="3" style="text-align: center; padding: 20px;">
-            No hay datos disponibles.
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="control-group">
+      <label for="tamano" class="label-control">Filas por página:</label>
+      <input
+        id="tamano"
+        type="number"
+        min="1"
+        class="input-control"
+        [(ngModel)]="tamanoPagina"
+        (change)="onTamanoChange()"
+      />
+    </div>
+  </div>
+
+  <div class="table-card">
+    
+    <div *ngIf="cargando" class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Cargando datos...</p>
+    </div>
+
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th style="width: 80px;">ID</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+            <th style="text-align: right;">Monto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of listaCobros">
+            <td><span class="badge-id">#{{ c.id }}</span></td>
+            <td class="fw-bold">{{ c.nombre }}</td>
+            <td>{{ c.telefono || '---' }}</td>
+            <td>{{ c.direccion || '---' }}</td>
+            <td style="text-align: right; color: #2e7d32; font-weight: bold;">
+              {{ c.monto | currency }}
+            </td>
+          </tr>
+          <tr *ngIf="!cargando && listaCobros.length === 0">
+            <td colspan="5" class="empty-state">
+              No hay registros para mostrar.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-footer" *ngIf="primeraCargaRealizada && listaCobros.length > 0">
+      <span class="pagination-info">
+        Página <strong>{{ paginaActual }}</strong> de <strong>{{ totalPaginas }}</strong>
+        <span class="text-muted">(Total: {{ totalRegistros }})</span>
+      </span>
+
+      <div class="pagination-buttons">
+        <button 
+          class="btn btn-outline" 
+          (click)="anteriorPagina()" 
+          [disabled]="paginaActual <= 1">
+          ❮ Anterior
+        </button>
+        
+        <button 
+          class="btn btn-outline" 
+          (click)="siguientePagina()" 
+          [disabled]="paginaActual >= totalPaginas">
+          Siguiente ❯
+        </button>
+      </div>
+    </div>
+
   </div>
 </div>

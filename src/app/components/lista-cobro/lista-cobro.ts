@@ -15,10 +15,13 @@ import { finalize, timeout } from 'rxjs/operators';
 })
 export class ListaCobroComponent implements OnInit {
   private cobrosService = inject(CobrosService);
-  private cd = inject(ChangeDetectorRef); // Inyección para forzar actualización de vista
+  private cd = inject(ChangeDetectorRef);
 
   listaCobros: CobroPaginadoDto[] = [];
+  
+  // Variables de paginación y estado
   totalRegistros: number = 0;
+  totalPaginas: number = 0; // Guardamos la cantidad de páginas
   cargando: boolean = false;
   primeraCargaRealizada: boolean = false;
 
@@ -27,13 +30,13 @@ export class ListaCobroComponent implements OnInit {
 
   ngOnInit(): void {
     this.primeraCargaRealizada = false;
+    // Opcional: Cargar datos al inicio
+    // this.consultarCobros(); 
   }
 
   consultarCobros(): void {
     this.cargando = true;
     this.primeraCargaRealizada = true;
-    
-    // Limpiamos la lista mientras carga para evitar confusión visual
     this.listaCobros = []; 
 
     this.cobrosService
@@ -42,21 +45,15 @@ export class ListaCobroComponent implements OnInit {
         timeout(15000),
         finalize(() => {
           this.cargando = false;
-          this.cd.detectChanges(); // Forzamos actualización al terminar
+          this.cd.detectChanges();
         })
       )
       .subscribe({
         next: (resp: any) => {
-          console.log('1. Respuesta Backend:', resp);
-
-          // 1. Extraer el objeto principal
           const payload = resp?.data ?? resp?.result ?? resp;
-
-          // 2. Extraer el array (buscamos listacobros en minúscula explícitamente)
           const itemsRaw = this.normalizarListaCobros(payload);
-          console.log(`2. Items extraídos (${itemsRaw.length}):`, itemsRaw);
 
-          // 3. Extraer el total
+          // Obtener total de registros
           const totalRegistros =
             payload?.totalregistros ??
             payload?.totalRegistros ??
@@ -64,32 +61,28 @@ export class ListaCobroComponent implements OnInit {
             payload?.total ??
             itemsRaw.length;
 
-          // 4. Normalizar propiedades (Mapeo seguro)
-          const listaNormalizada = itemsRaw.map((item: any) => {
-            return {
-              // Copiamos todo lo que venga
-              ...item,
-              // Forzamos las propiedades que usa el HTML
-              id: item.id || item.Id || item.ID || 0,
-              nombre: item.nombre || item.Nombre || item.NOMBRE || 'Sin Nombre',
-              // Si 'monto' no viene en el JSON, ponemos 0 para que no falle
-              monto: item.monto || item.Monto || item.MONTO || 0,
-              // Mapeamos fecReg por si acaso (noté que viene como 'fecreg')
-              fecReg: item.fecreg || item.fecReg || item.FecReg || ''
-            };
-          });
-
-          console.log('3. Lista Normalizada Final:', listaNormalizada);
-
-          // 5. Asignar y detectar cambios
-          this.listaCobros = listaNormalizada;
           this.totalRegistros = Number(totalRegistros) || 0;
+
+          // Calcular y guardar cantidad de páginas
+          this.totalPaginas = this.tamanoPagina > 0 
+            ? Math.ceil(this.totalRegistros / this.tamanoPagina) 
+            : 1;
+
+          // Mapeo seguro de datos incluyendo teléfono y dirección
+          this.listaCobros = itemsRaw.map((item: any) => ({
+            ...item,
+            id: item.id || item.Id || item.ID || 0,
+            nombre: item.nombre || item.Nombre || item.NOMBRE || 'Sin Nombre',
+            telefono: item.telefono || item.Telefono || item.TELEFONO || '',
+            direccion: item.direccion || item.Direccion || item.DIRECCION || '',
+            monto: item.monto || item.Monto || item.MONTO || 0,
+            fecReg: item.fecreg || item.fecReg || item.FecReg || ''
+          }));
           
-          // Forzar a Angular a pintar los cambios
           this.cd.detectChanges();
         },
         error: (err) => {
-          console.error('ERROR EN HTTP:', err);
+          console.error('ERROR:', err);
           Swal.fire('Error', 'El servidor no respondió', 'error');
         }
       });
@@ -98,19 +91,18 @@ export class ListaCobroComponent implements OnInit {
   private normalizarListaCobros(payload: any): any[] {
     if (!payload) return [];
     if (Array.isArray(payload)) return payload;
-
-    // Buscamos la propiedad con todas las variantes posibles
-    const lista =
-      payload.listacobros || // Caso exacto de tu JSON (minúsculas)
-      payload.listaCobros ||
-      payload.ListaCobros ||
-      payload.items ||
-      payload.Items ||
-      payload.data ||
-      payload.$values || 
-      payload.values;
-
+    const lista = payload.listacobros || payload.listaCobros || payload.items || payload.data || payload.$values;
     return Array.isArray(lista) ? lista : [];
+  }
+
+  // --- MÉTODOS DE PAGINACIÓN ---
+
+  // Evento para el input de tamaño (Solo al presionar Enter o Blur)
+  onTamanoChange(): void {
+    // Validamos que sea al menos 1
+    if (this.tamanoPagina < 1) this.tamanoPagina = 1;
+    this.paginaActual = 1; // Reiniciar a página 1 al cambiar tamaño
+    this.consultarCobros();
   }
 
   cargarPrimeraPagina(): void {
@@ -118,20 +110,17 @@ export class ListaCobroComponent implements OnInit {
     this.consultarCobros();
   }
 
-  cambiarPagina(n: number): void { 
-    this.paginaActual = n; 
-    this.consultarCobros(); 
-  }
-
-  onTamanoChange(): void {
-    this.paginaActual = 1;
-    if (this.primeraCargaRealizada) {
+  siguientePagina(): void {
+    if (this.paginaActual < this.totalPaginas) {
+      this.paginaActual++;
       this.consultarCobros();
     }
   }
 
-  get totalPaginas(): number { 
-    if (this.tamanoPagina <= 0) return 1;
-    return Math.ceil(this.totalRegistros / this.tamanoPagina) || 1; 
+  anteriorPagina(): void {
+    if (this.paginaActual > 1) {
+      this.paginaActual--;
+      this.consultarCobros();
+    }
   }
 }
