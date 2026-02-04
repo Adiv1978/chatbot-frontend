@@ -1,0 +1,35 @@
+<nav class="navbar" *ngIf="mostrarMenu">
+  <div class="nav-container">
+    
+    <div class="logo">
+      Sistema Cobros
+    </div>
+
+    <ul class="nav-links">
+      <li>
+        <a routerLink="/carga-masiva" routerLinkActive="active">
+          📂 Carga Masiva
+        </a>
+      </li>
+      <li>
+        <a routerLink="/lista-cobros" routerLinkActive="active">
+          🔍 Gestionar / Buscar
+        </a>
+      </li>
+      <li>
+        <a routerLink="/mantenimiento" routerLinkActive="active">
+          ⚙️ Mantenimiento
+        </a>
+      </li>
+    </ul>
+
+    <button class="btn-logout" (click)="cerrarSesion()">
+      Cerrar Sesión 🚪
+    </button>
+
+  </div>
+</nav>
+
+<div class="main-content">
+  <router-outlet></router-outlet>
+</div>

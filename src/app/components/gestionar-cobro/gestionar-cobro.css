@@ -1,0 +1,83 @@
+/* CONTENEDOR PRINCIPAL */
+/* LAYOUT GENERAL */
+.container-gestion {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+h2 { color: #333; margin-bottom: 20px; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+
+/* BÚSQUEDA */
+.search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+.search-box input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+.btn-buscar { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; }
+.btn-buscar:hover { background-color: #0056b3; }
+.btn-buscar:disabled { background-color: #ccc; cursor: not-allowed; }
+
+/* BOTONES Y TABLA */
+.actions-bar { text-align: right; margin-bottom: 15px; }
+.btn-guardar { background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
+.btn-guardar:hover { background-color: #218838; }
+.btn-guardar:disabled { background-color: #ccc; cursor: not-allowed; }
+
+.tabla-container { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 600px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+th { background-color: #f8f9fa; font-weight: bold; color: #333; }
+.text-center { text-align: center; }
+
+/* INPUT MONTO */
+.input-group { display: flex; align-items: center; border: 1px solid #ccc; border-radius: 4px; padding: 5px; background: white; }
+.prefix { color: #666; font-weight: bold; margin-right: 5px; }
+.input-monto { border: none; outline: none; width: 100%; font-weight: bold; font-size: 14px; }
+
+/* --- INTERRUPTOR VISUAL (CSS PURO) --- */
+.custom-toggle {
+  position: relative;
+  width: 50px;
+  height: 24px;
+  background-color: #ccc; /* Gris (Apagado) */
+  border-radius: 34px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.toggle-circle {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: transform 0.3s ease;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* ESTADO ACTIVO (VERDE) */
+.custom-toggle.active {
+  background-color: #28a745;
+}
+
+/* MOVER CÍRCULO */
+.custom-toggle.active .toggle-circle {
+  transform: translateX(26px);
+}
+
+/* ESTADO BLOQUEADO */
+.custom-toggle.blocked {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* BADGES */
+.badge { padding: 5px 10px; border-radius: 12px; background-color: #e9ecef; color: #495057; font-size: 0.85em; }
+.badge.enviado { background-color: #d1ecf1; color: #0c5460; }

@@ -1,0 +1,14 @@
+<div class="card-borrado">
+  <div class="info">
+    <h3>Mantenimiento de Datos</h3>
+    <p>Utilice esta opción para limpiar la base de datos de cobros y comenzar una nueva carga masiva.</p>
+  </div>
+  
+  <button 
+    (click)="confirmarBorrado()" 
+    [disabled]="cargando" 
+    class="btn-danger">
+    <span *ngIf="!cargando">VACIAR TABLA DE COBROS</span>
+    <span *ngIf="cargando">Procesando...</span>
+  </button>
+</div>

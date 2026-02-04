@@ -1,0 +1,92 @@
+/* Reseteo básico para el body (opcional, pero recomendado) */
+:host {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: block;
+  min-height: 100vh;
+  background-color: #f4f6f9; /* Fondo gris claro para toda la app */
+}
+
+/* NAVBAR PRINCIPAL */
+.navbar {
+  background-color: #343a40; /* Gris oscuro elegante */
+  color: white;
+  padding: 0 20px;
+  height: 60px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  position: sticky; /* Se queda fijo arriba */
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* LOGO */
+.logo {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+/* ENLACES */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 15px; /* Reducimos un poco el gap para que quepan 3 items */
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #adb5bd; /* Gris claro */
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.nav-links a.active[routerLink="/borrar-pagos"] {
+  background-color: #dc3545; /* Rojo sutil o azul para indicar peligro/sistema */
+}
+
+.nav-links a:hover {
+  color: white;
+  background-color: rgba(255,255,255,0.1);
+}
+
+/* Clase automática de Angular cuando la ruta está activa */
+.nav-links a.active {
+  color: white;
+  background-color: #007bff; /* Azul activo */
+}
+
+/* BOTÓN LOGOUT */
+.btn-logout {
+  background-color: transparent;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-logout:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* CONTENIDO PRINCIPAL */
+.main-content {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}

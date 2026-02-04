@@ -1,0 +1,44 @@
+.card-borrado {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 25px;
+  border: 2px solid #f8d7da;
+  border-radius: 12px;
+  background-color: #fff;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.info h3 {
+  color: #721c24;
+  margin-top: 0;
+}
+
+.info p {
+  color: #856404;
+  font-size: 0.95em;
+  margin-bottom: 20px;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+  font-size: 1.1em;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #a71d2a;
+}
+
+.btn-danger:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+}

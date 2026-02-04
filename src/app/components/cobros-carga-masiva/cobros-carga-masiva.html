@@ -1,0 +1,70 @@
+<div class="contenedor">
+  <h2>Carga Masiva de Cobros</h2>
+
+  <div class="area-carga">
+    <input type="file" (change)="onFileChange($event)" accept=".csv" [disabled]="cargando">
+    <p class="nota">Sube tu archivo CSV aquí.</p>
+  </div>
+
+  <div *ngIf="mensaje" class="alerta" 
+       [class.exito]="tipoMensaje === 'exito'" 
+       [class.error]="tipoMensaje === 'error'">
+    {{ mensaje }}
+  </div>
+
+  <div *ngIf="registrosPrevios.length > 0">
+    <div class="acciones">
+      <h3>Previsualización (Total: {{ registrosPrevios.length }})</h3>
+      <button (click)="enviarDatos()" [disabled]="cargando" class="btn-primary">
+        {{ cargando ? 'Enviando...' : 'Confirmar Carga' }}
+      </button>
+    </div>
+
+    <div class="tabla-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Teléfono</th>
+            <th>Monto</th>
+            <th>Vence</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of registrosPaginados">
+            <td>{{ item.nombre }}</td>
+            <td>{{ item.telefono }}</td>
+            <td>{{ item.monto | currency }}</td>
+            <td>{{ item.fecCaduca | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <span [class.pagado]="item.ispagado" [class.pendiente]="!item.ispagado">
+                {{ item.ispagado ? 'PAGADO' : 'PENDIENTE' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="paginacion-controles" *ngIf="totalPaginas > 1">
+      <button 
+        class="btn-pag" 
+        (click)="cambiarPagina(paginaActual - 1)" 
+        [disabled]="paginaActual === 1">
+        &laquo; Anterior
+      </button>
+
+      <span class="info-pag">
+        Página <strong>{{ paginaActual }}</strong> de <strong>{{ totalPaginas }}</strong>
+      </span>
+
+      <button 
+        class="btn-pag" 
+        (click)="cambiarPagina(paginaActual + 1)" 
+        [disabled]="paginaActual === totalPaginas">
+        Siguiente &raquo;
+      </button>
+    </div>
+  </div>
+</div>

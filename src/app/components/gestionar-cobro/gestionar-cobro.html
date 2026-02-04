@@ -1,0 +1,75 @@
+<div class="container-gestion">
+  <h2>Gestión de Cobros</h2>
+
+  <div class="search-box">
+    <input type="text" [(ngModel)]="telefonoBusqueda" placeholder="Buscar..." (keyup.enter)="buscar()" [disabled]="cargando">
+    <button type="button" (click)="buscar()" class="btn-buscar" [disabled]="cargando">
+      <span *ngIf="!cargando">🔍 Buscar</span>
+      <span *ngIf="cargando">⏳ ...</span>
+    </button>
+  </div>
+
+  <div *ngIf="listaResultados.length > 0">
+    <div class="actions-bar">
+      <button type="button" (click)="guardarCambios()" [disabled]="cargando" class="btn-guardar">
+        <span *ngIf="!cargando">💾 Guardar Cambios</span>
+        <span *ngIf="cargando">💾 Guardando...</span>
+      </button>
+    </div>
+
+    <div class="tabla-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th style="width: 150px;">Monto</th>
+            <th>Vencimiento</th>
+            <th class="text-center">Pagado?</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listaResultados">
+            <td>
+              <strong>{{ item.nombre }}</strong><br>
+              <small>{{ item.telefono }}</small><br>
+              <small style="color: #666;">{{ item.direccion }}</small>
+            </td>
+            
+            <td>
+              <div class="input-group">
+                <span class="prefix">RD$</span>
+                <input type="number" [(ngModel)]="item.monto" class="input-monto" [disabled]="cargando">
+              </div>
+            </td>
+
+            <td>{{ item.fecCaduca | date:'dd/MM/yyyy' }}</td>
+
+            <td class="text-center">
+              <div 
+                class="custom-toggle" 
+                [class.active]="item.ispagado" 
+                [class.blocked]="cargando"
+                (click)="togglePago(item)">
+                
+                <div class="toggle-circle"></div>
+              </div>
+
+              <br>
+              <small [style.color]="item.ispagado ? 'green' : 'red'">
+                {{ item.ispagado ? 'PAGADO' : 'PENDIENTE' }}
+              </small>
+            </td>
+
+            <td>
+               <span class="badge" [class.enviado]="item.isenviado">
+                 {{ item.isenviado ? 'Enviado' : 'No Enviado' }}
+               </span>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

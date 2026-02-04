@@ -1,0 +1,23 @@
+<div class="login-container">
+  <div class="card">
+    <h2>Bienvenido</h2>
+    
+    <div class="form-group">
+      <label>Usuario</label>
+      <input type="text" [(ngModel)]="usuario" placeholder="Ej: admin" [disabled]="cargando">
+    </div>
+
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input type="password" [(ngModel)]="clave" (keyup.enter)="iniciarSesion()" [disabled]="cargando">
+    </div>
+<button 
+  type="button" 
+  (click)="iniciarSesion()" 
+  [disabled]="cargando" 
+  class="btn-login"
+  [style.opacity]="cargando ? '0.5' : '1'"> <span *ngIf="cargando">⏳ Esperando...</span>
+  <span *ngIf="!cargando">Iniciar Sesión</span>
+</button>
+  </div>
+</div>
