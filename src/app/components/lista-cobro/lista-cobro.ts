@@ -43,7 +43,18 @@ export class ListaCobroComponent implements OnInit {
       .subscribe({
         next: (resp: RespuestaCobrosPaginados | any) => {
           const payload = resp?.data ?? resp?.result ?? resp;
+
           const listaCobros = this.normalizarListaCobros(payload);
+
+          const listaCobros = Array.isArray(payload)
+            ? payload
+            : payload?.listacobros ??
+              payload?.listaCobros ??
+              payload?.ListaCobros ??
+              payload?.items ??
+              payload?.Items ??
+              [];
+
           const totalRegistros =
             payload?.totalregistros ??
             payload?.totalRegistros ??
@@ -71,6 +82,7 @@ export class ListaCobroComponent implements OnInit {
       });
   }
 
+
   private normalizarListaCobros(payload: any): CobroPaginadoDto[] {
     const listaCobrosRaw = Array.isArray(payload)
       ? payload
@@ -92,6 +104,7 @@ export class ListaCobroComponent implements OnInit {
     }
     return [];
   }
+
 
   cargarPrimeraPagina(): void {
     this.paginaActual = 1;
