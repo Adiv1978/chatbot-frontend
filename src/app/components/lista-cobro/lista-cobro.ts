@@ -1,8 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CobrosService } from '../../services/cobros';
-import { CobroPaginadoDto, RespuestaCobrosPaginados } from '../../models/cobros.models';
+import { CobroPaginadoDto } from '../../models/cobros.models';
 import Swal from 'sweetalert2';
 import { finalize, timeout } from 'rxjs/operators';
 
@@ -15,6 +15,7 @@ import { finalize, timeout } from 'rxjs/operators';
 })
 export class ListaCobroComponent implements OnInit {
   private cobrosService = inject(CobrosService);
+  private cd = inject(ChangeDetectorRef); // Inyección para forzar actualización de vista
 
   listaCobros: CobroPaginadoDto[] = [];
   totalRegistros: number = 0;
@@ -31,6 +32,9 @@ export class ListaCobroComponent implements OnInit {
   consultarCobros(): void {
     this.cargando = true;
     this.primeraCargaRealizada = true;
+    
+    // Limpiamos la lista mientras carga para evitar confusión visual
+    this.listaCobros = []; 
 
     this.cobrosService
       .obtenerCobrosPaginados(this.paginaActual, this.tamanoPagina)
@@ -38,73 +42,75 @@ export class ListaCobroComponent implements OnInit {
         timeout(15000),
         finalize(() => {
           this.cargando = false;
+          this.cd.detectChanges(); // Forzamos actualización al terminar
         })
       )
       .subscribe({
         next: (resp: any) => {
-          console.log('Respuesta cruda del backend:', resp);
+          console.log('1. Respuesta Backend:', resp);
 
-          // 1. Identificar dónde está la información principal
+          // 1. Extraer el objeto principal
           const payload = resp?.data ?? resp?.result ?? resp;
 
-          // 2. Obtener el array de items usando el helper
+          // 2. Extraer el array (buscamos listacobros en minúscula explícitamente)
           const itemsRaw = this.normalizarListaCobros(payload);
+          console.log(`2. Items extraídos (${itemsRaw.length}):`, itemsRaw);
 
-          // 3. Calcular el total de registros buscando variantes de nombre
+          // 3. Extraer el total
           const totalRegistros =
             payload?.totalregistros ??
             payload?.totalRegistros ??
             payload?.TotalRegistros ??
             payload?.total ??
-            payload?.Total ??
             itemsRaw.length;
 
-          // 4. Normalizar cada objeto para asegurar que id, nombre y monto existan
-          //    (Mapea PascalCase, UPPERCASE o camelCase a las propiedades que espera el HTML)
-          const listaNormalizada = itemsRaw.map((item: any) => ({
-            ...item,
-            id: item?.id ?? item?.Id ?? item?.ID,
-            nombre: item?.nombre ?? item?.Nombre ?? item?.NOMBRE,
-            monto: item?.monto ?? item?.Monto ?? item?.MONTO
-          }));
+          // 4. Normalizar propiedades (Mapeo seguro)
+          const listaNormalizada = itemsRaw.map((item: any) => {
+            return {
+              // Copiamos todo lo que venga
+              ...item,
+              // Forzamos las propiedades que usa el HTML
+              id: item.id || item.Id || item.ID || 0,
+              nombre: item.nombre || item.Nombre || item.NOMBRE || 'Sin Nombre',
+              // Si 'monto' no viene en el JSON, ponemos 0 para que no falle
+              monto: item.monto || item.Monto || item.MONTO || 0,
+              // Mapeamos fecReg por si acaso (noté que viene como 'fecreg')
+              fecReg: item.fecreg || item.fecReg || item.FecReg || ''
+            };
+          });
 
-          // 5. Asignar al estado del componente
+          console.log('3. Lista Normalizada Final:', listaNormalizada);
+
+          // 5. Asignar y detectar cambios
           this.listaCobros = listaNormalizada;
           this.totalRegistros = Number(totalRegistros) || 0;
+          
+          // Forzar a Angular a pintar los cambios
+          this.cd.detectChanges();
         },
         error: (err) => {
           console.error('ERROR EN HTTP:', err);
-          Swal.fire('Error', 'El servidor no respondió o hubo un error en la petición', 'error');
+          Swal.fire('Error', 'El servidor no respondió', 'error');
         }
       });
   }
 
-  /**
-   * Helper para extraer el array de cobros de estructuras complejas o anidadas.
-   */
   private normalizarListaCobros(payload: any): any[] {
-    // Si el payload mismo ya es un array, devolverlo directamente
-    if (Array.isArray(payload)) {
-      return payload;
-    }
+    if (!payload) return [];
+    if (Array.isArray(payload)) return payload;
 
-    // Buscar la propiedad que contenga la lista
+    // Buscamos la propiedad con todas las variantes posibles
     const lista =
-      payload?.listacobros ??
-      payload?.listaCobros ??
-      payload?.ListaCobros ??
-      payload?.items ??
-      payload?.Items ??
-      payload?.data ??
-      payload?.$values ?? // Estructura común en serialización .NET con referencias circulares
-      payload?.values;
+      payload.listacobros || // Caso exacto de tu JSON (minúsculas)
+      payload.listaCobros ||
+      payload.ListaCobros ||
+      payload.items ||
+      payload.Items ||
+      payload.data ||
+      payload.$values || 
+      payload.values;
 
-    if (Array.isArray(lista)) {
-      return lista;
-    }
-    
-    // Si llegamos aquí, retornamos array vacío
-    return [];
+    return Array.isArray(lista) ? lista : [];
   }
 
   cargarPrimeraPagina(): void {

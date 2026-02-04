@@ -11,7 +11,7 @@ export class AuthService {
   private http = inject(HttpClient);
 
   // Tu URL original
-  private apiUrl = 'https://localhost:32773/api/Usuario'; 
+  private apiUrl = 'https://localhost:32769/api/Usuario'; 
   
   constructor() { }
 
