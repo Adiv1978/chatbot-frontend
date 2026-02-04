@@ -32,7 +32,7 @@ export class ListaCobroComponent implements OnInit {
     this.cargando = true;
     this.primeraCargaRealizada = true;
 
-    codex/fix-lista-cobro.ts-not-displaying-data-2s3sd9
+
     this.cobrosService
       .obtenerCobrosPaginados(this.paginaActual, this.tamanoPagina)
       .pipe(
