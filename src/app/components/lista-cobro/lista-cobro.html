@@ -1,4 +1,20 @@
 <div class="lista-container">
+  <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+    <button type="button" (click)="cargarPrimeraPagina()">Cargar página 1</button>
+    <label style="display: flex; gap: 6px; align-items: center;">
+      Líneas por página
+      <input
+        type="number"
+        min="1"
+        [(ngModel)]="tamanoPagina"
+        (ngModelChange)="onTamanoChange()"
+        style="width: 80px;"
+      />
+    </label>
+    <span *ngIf="primeraCargaRealizada">
+      Total páginas: {{ totalPaginas }}
+    </span>
+  </div>
   <div class="tabla-wrapper" style="position: relative; min-height: 100px;">
     <div *ngIf="cargando" style="background: rgba(0,0,0,0.1); padding: 20px; text-align: center;">
       <strong>CARGANDO DATOS... POR FAVOR ESPERE</strong>
