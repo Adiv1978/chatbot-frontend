@@ -71,7 +71,6 @@ export class ListaCobroComponent implements OnInit {
     });
   }
 
-  // Métodos simplificados
   cambiarPagina(n: number) { this.paginaActual = n; this.consultarCobros(); }
   onTamanoChange() { this.paginaActual = 1; this.consultarCobros(); }
   get totalPaginas(): number { return Math.ceil(this.totalRegistros / this.tamanoPagina) || 1; }
