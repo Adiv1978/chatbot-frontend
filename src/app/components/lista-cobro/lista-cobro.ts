@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CobrosService } from '../../services/cobros';
-import { RespuestaCobrosPaginados } from '../../models/cobros.models';
+import { CobroPaginadoDto, RespuestaCobrosPaginados } from '../../models/cobros.models';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -12,10 +12,10 @@ import Swal from 'sweetalert2';
   templateUrl: './lista-cobro.html',
   styleUrl: './lista-cobro.css'
 })
-export class ListaCobroComponent {
+export class ListaCobroComponent implements OnInit {
   private cobrosService = inject(CobrosService);
 
-  listaCobros: any[] = []; // Usamos any temporalmente para descartar errores de modelo
+  listaCobros: CobroPaginadoDto[] = [];
   totalRegistros: number = 0;
   cargando: boolean = false;
   primeraCargaRealizada: boolean = false;
@@ -23,22 +23,29 @@ export class ListaCobroComponent {
   paginaActual: number = 1;
   tamanoPagina: number = 20;
 
-  consultarCobros(): void {
-    // PRUEBA DE FUEGO: Esto debe aparecer SIEMPRE
-    console.log('%c >>> BOTON PRESIONADO <<<', 'color: white; background: red; padding: 5px;');
-    alert('Click detectado en el componente'); 
+  ngOnInit(): void {
+    this.consultarCobros();
+  }
 
+  consultarCobros(): void {
     this.cargando = true;
     this.primeraCargaRealizada = true;
 
     this.cobrosService.obtenerCobrosPaginados(this.paginaActual, this.tamanoPagina).subscribe({
-      next: (resp: any) => {
-        console.log('DATOS RECIBIDOS:', resp);
-        
-        // Mapeo flexible para ver qué funciona
-        this.listaCobros = resp.ListaCobros || resp.listaCobros || [];
-        this.totalRegistros = resp.TotalRegistros || resp.totalRegistros || 0;
-        
+      next: (resp: RespuestaCobrosPaginados | any) => {
+        const listaCobros =
+          resp?.listacobros ??
+          resp?.listaCobros ??
+          resp?.ListaCobros ??
+          [];
+        const totalRegistros =
+          resp?.totalregistros ??
+          resp?.totalRegistros ??
+          resp?.TotalRegistros ??
+          0;
+
+        this.listaCobros = Array.isArray(listaCobros) ? listaCobros : [];
+        this.totalRegistros = Number(totalRegistros) || 0;
         this.cargando = false;
       },
       error: (err) => {
