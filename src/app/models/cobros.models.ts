@@ -29,8 +29,8 @@ export interface CobroPaginadoDto extends CobroDTO {
 
 export interface RespuestaCobrosPaginados {
     // Coincide con tu clase RespuestaCobrosPaginados en C#
-    totalregistros: number;
-    listacobros: CobroPaginadoDto[];
+    totalRegistros: number;
+    listaCobros: CobroPaginadoDto[];
 }
 
 export interface RespuestaOperacionDTO {
