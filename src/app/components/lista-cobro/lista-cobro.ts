@@ -33,19 +33,33 @@ export class ListaCobroComponent implements OnInit {
 
     this.cobrosService.obtenerCobrosPaginados(this.paginaActual, this.tamanoPagina).subscribe({
       next: (resp: RespuestaCobrosPaginados | any) => {
+        const payload = resp?.data ?? resp?.result ?? resp;
         const listaCobros =
-          resp?.listacobros ??
-          resp?.listaCobros ??
-          resp?.ListaCobros ??
+          payload?.listacobros ??
+          payload?.listaCobros ??
+          payload?.ListaCobros ??
+          payload?.items ??
+          payload?.Items ??
           [];
         const totalRegistros =
-          resp?.totalregistros ??
-          resp?.totalRegistros ??
-          resp?.TotalRegistros ??
+          payload?.totalregistros ??
+          payload?.totalRegistros ??
+          payload?.TotalRegistros ??
+          payload?.total ??
+          payload?.Total ??
           0;
 
-        this.listaCobros = Array.isArray(listaCobros) ? listaCobros : [];
-        this.totalRegistros = Number(totalRegistros) || 0;
+        const listaNormalizada = Array.isArray(listaCobros)
+          ? listaCobros.map((item) => ({
+              ...item,
+              id: item?.id ?? item?.Id ?? item?.ID,
+              nombre: item?.nombre ?? item?.Nombre ?? item?.NOMBRE,
+              monto: item?.monto ?? item?.Monto ?? item?.MONTO
+            }))
+          : [];
+
+        this.listaCobros = listaNormalizada;
+        this.totalRegistros = Number(totalRegistros) || listaNormalizada.length;
         this.cargando = false;
       },
       error: (err) => {
