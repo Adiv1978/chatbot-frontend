@@ -12,7 +12,7 @@ export class CobrosService {
   private http = inject(HttpClient);
 
   // URL BASE: Ajusta el puerto (7152, 5000, etc.) según tu launchSettings.json de .NET
-  private apiUrl = 'https://localhost:32769/api/cobros'; 
+  private apiUrl = 'https://localhost:32771/api/cobros'; 
 
   constructor() { }
 

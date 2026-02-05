@@ -1,35 +1,21 @@
 <nav class="navbar" *ngIf="mostrarMenu">
   <div class="nav-container">
-    
     <div class="logo">
-      Sistema Cobros
+      <i class="bi bi-shield-check"></i> Sistema Cobros
     </div>
-
     <ul class="nav-links">
-      <li>
-        <a routerLink="/carga-masiva" routerLinkActive="active">
-          📂 Carga Masiva
-        </a>
-      </li>
-      <li>
-        <a routerLink="/lista-cobros" routerLinkActive="active">
-          🔍 Gestionar / Buscar
-        </a>
-      </li>
-      <li>
-        <a routerLink="/borrar-pagos" routerLinkActive="active">
-          ⚙️ Borrar Pagos
+      <li><a routerLink="/carga-masiva" routerLinkActive="active">📂 Carga Masiva</a></li>
+      <li><a routerLink="/lista-cobros" routerLinkActive="active">🔍 Gestionar</a></li>
+      <li *ngIf="authService.estaLogueado()">
+        <a routerLink="/gestion-plantilla" routerLinkActive="active">
+          <i class="bi bi-file-earmark-text-fill"></i> Plantillas
         </a>
       </li>
     </ul>
-
-    <button class="btn-logout" (click)="cerrarSesion()">
-      Cerrar Sesión 🚪
-    </button>
-
+    <button class="btn-logout" (click)="cerrarSesion()">Salir 🚪</button>
   </div>
 </nav>
 
-<div class="main-content">
+<div [ngClass]="{'main-content': mostrarMenu, 'login-wrapper': !mostrarMenu}">
   <router-outlet></router-outlet>
 </div>

@@ -1,62 +1,34 @@
-.login-container {
-  height: 100vh;
+/* src/app/components/login/login.css */
+.login-page {
   display: flex;
-  justify-content: center;
   align-items: center;
-  background-color: #f0f2f5;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2000; /* Asegura que tape el menú si estuviera presente */
 }
 
 .login-card {
   background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: 3rem;
+  border-radius: 2rem;
   width: 100%;
-  max-width: 400px;
-  text-align: center;
+  max-width: 450px;
 }
 
-.form-group {
-  margin-bottom: 1rem;
-  text-align: left;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  color: #333;
-}
-
-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box; /* Importante para que el padding no rompa el ancho */
-}
-
-button {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #007bff;
+.icon-badge {
+  width: 80px;
+  height: 80px;
+  background: #0d6efd;
   color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 1rem;
-}
-
-button:disabled {
-  background-color: #ccc;
-}
-
-.error-alert {
-  color: #dc3545;
-  background-color: #f8d7da;
-  padding: 0.5rem;
-  border-radius: 4px;
-  margin-top: 1rem;
-  font-size: 0.9rem;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  margin: 0 auto;
 }

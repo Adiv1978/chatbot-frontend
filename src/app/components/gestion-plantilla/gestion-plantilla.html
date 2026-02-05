@@ -1,0 +1,52 @@
+<div class="container-fluid">
+  <div class="modern-card mb-5">
+    <h2 class="card-title"><i class="bi bi-pencil-square"></i> Configuración de Plantillas</h2>
+    
+    <div class="row g-4">
+      <div class="col-md-9">
+        <input type="text" [(ngModel)]="nuevaPlantilla.nombre" class="form-control modern-input mb-3" placeholder="Nombre de la Plantilla">
+        <textarea [(ngModel)]="nuevaPlantilla.contenido" class="form-control modern-input" rows="10" placeholder="Escriba el contenido del mensaje..."></textarea>
+      </div>
+      
+      <div class="col-md-3">
+        <label class="fw-bold mb-2 text-secondary small">INSERTAR ETIQUETAS</label>
+        <button (click)="insertarTag('#nombrecli')" class="btn-tag">#nombrecli</button>
+        <button (click)="insertarTag('#telefono')" class="btn-tag">#telefono</button>
+        <button (click)="insertarTag('#monto')" class="btn-tag">#monto</button>
+        <button (click)="insertarTag('#feccaduca')" class="btn-tag">#feccaduca</button>
+      </div>
+    </div>
+
+    <div class="mt-4 text-end">
+      <button (click)="guardar()" class="btn-save">
+        <i class="bi bi-cloud-arrow-up-fill"></i> GUARDAR PLANTILLA
+      </button>
+    </div>
+  </div>
+
+  <div class="modern-card">
+    <h4 class="card-title mb-4"><i class="bi bi-list-check"></i> Mis Plantillas</h4>
+    <div class="table-responsive">
+      <table class="table modern-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th class="text-end">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of listaPlantillas">
+            <td class="text-primary fw-bold">#{{p.id}}</td>
+            <td>{{p.nombre}}</td>
+            <td class="text-end">
+              <button (click)="borrar(p.id)" class="btn btn-outline-danger btn-sm border-0">
+                <i class="bi bi-trash3-fill"></i> Eliminar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

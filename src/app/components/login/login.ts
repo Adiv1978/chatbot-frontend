@@ -1,11 +1,8 @@
-import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core'; // <--- Agregar ChangeDetectorRef
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
-import { UsuarioDTO } from '../../models/auth.models';
-import Swal from 'sweetalert2'; 
-import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -17,71 +14,40 @@ import { finalize } from 'rxjs/operators';
 export class LoginComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
-  private cd = inject(ChangeDetectorRef); // <--- Inyectar el detector de cambios
 
-  usuario: string = '';
-  clave: string = '';
-  cargando: boolean = false;
+  // Inicializamos el objeto que usa el HTML
+  usuario = {
+    nombreUsuario: '',
+    clave: ''
+  };
 
   ngOnInit() {
-    if (localStorage.getItem('token_chatbot')) {
-      this.router.navigate(['/carga-masiva']);
+    if (this.authService.estaLogueado()) {
+      this.router.navigate(['/lista-cobros']);
     }
   }
 
-  iniciarSesion() {
-    // 1. Validar campos
-    if (!this.usuario || !this.clave) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Faltan datos',
-        text: 'Por favor ingresa usuario y contraseña',
-        confirmButtonColor: '#3085d6'
-      });
+  login() {
+    if (!this.usuario.nombreUsuario || !this.usuario.clave) {
+      alert('Por favor, ingrese sus credenciales');
       return;
     }
 
-    // 2. Bloquear botón
-    this.cargando = true;
-
-    const credenciales: UsuarioDTO = {
-      nick: this.usuario,
-      pass: this.clave
+    // Mapeamos los campos del formulario al DTO que espera el servicio
+    const credenciales = {
+      nick: this.usuario.nombreUsuario,
+      pass: this.usuario.clave
     };
 
-    // 3. Llamada al servicio BLINDADA
-    this.authService.login(credenciales)
-      .pipe(
-        // ESTO ES LO NUEVO: finalize se ejecuta SIEMPRE cuando termina la petición
-        // (ya sea con éxito o con error), garantizando que el botón se libere.
-        finalize(() => {
-          this.cargando = false; 
-          this.cd.detectChanges(); // <--- Forzamos a Angular a actualizar la pantalla
-        })
-      )
-      .subscribe({
-        next: (resp) => {
-          if (resp && resp.exito) {
-            this.router.navigate(['/carga-masiva']);
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Acceso Denegado',
-              text: resp.mensaje || 'Credenciales incorrectas.',
-              confirmButtonColor: '#d33'
-            });
-          }
-        },
-        error: (err) => {
-          console.error(err);
-          const msg = err.error?.mensaje || 'No se pudo conectar con el servidor.';
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: msg,
-            confirmButtonColor: '#d33'
-          });
+    this.authService.login(credenciales).subscribe({
+      next: (resp) => {
+        if (resp.exito) {
+          this.router.navigate(['/lista-cobros']);
+        } else {
+          alert(resp.mensaje || 'Credenciales incorrectas');
         }
-      });
+      },
+      error: (err) => alert('Error al conectar con el servidor')
+    });
   }
 }

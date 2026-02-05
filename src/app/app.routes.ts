@@ -5,6 +5,7 @@ import { GestionarCobroComponent } from './components/gestionar-cobro/gestionar-
 import { authGuard } from './guards/auth.guard';
 import { BorrarPagosComponent } from './components/borrar-pagos/borrar-pagos';
 import { ListaCobroComponent } from './components/lista-cobro/lista-cobro';
+import { GestionPlantillaComponent } from './components/gestion-plantilla/gestion-plantilla';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -13,5 +14,6 @@ export const routes: Routes = [
     { path: 'gestionar-cobro', component: GestionarCobroComponent, canActivate: [authGuard] },
     { path: 'borrar-pagos', component: BorrarPagosComponent, canActivate: [authGuard] },
     { path: 'lista-cobros', component: ListaCobroComponent, canActivate: [authGuard] },
+    { path: 'gestion-plantilla', component: GestionPlantillaComponent, canActivate: [authGuard] },
     { path: '**', redirectTo: 'login' }
 ];
