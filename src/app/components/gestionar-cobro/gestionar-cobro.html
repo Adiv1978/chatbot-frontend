@@ -11,6 +11,22 @@
 
   <div *ngIf="listaResultados.length > 0">
     <div class="actions-bar">
+      <div class="bulk-dates">
+        <label>
+          Fecha de emisión
+          <input type="date" [(ngModel)]="fechaEmisionGlobal" [disabled]="cargando">
+        </label>
+
+        <label>
+          Fecha de caducidad
+          <input type="date" [(ngModel)]="fechaCaducidadGlobal" [disabled]="cargando">
+        </label>
+
+        <button type="button" (click)="aplicarFechasATodos()" [disabled]="cargando" class="btn-aplicar-fechas">
+          📅 Aplicar a todos
+        </button>
+      </div>
+
       <button type="button" (click)="guardarCambios()" [disabled]="cargando" class="btn-guardar">
         <span *ngIf="!cargando">💾 Guardar Cambios</span>
         <span *ngIf="cargando">💾 Guardando...</span>

@@ -19,6 +19,8 @@ export class GestionarCobroComponent {
   telefonoBusqueda: string = '';
   cargando: boolean = false;
   listaResultados: CobroListaDTO[] = [];
+  fechaCaducidadGlobal: string = '';
+  fechaEmisionGlobal: string = '';
 
   buscar() {
     if (!this.telefonoBusqueda || this.telefonoBusqueda.trim().length < 6) {
@@ -68,6 +70,26 @@ export class GestionarCobroComponent {
     
     // CAMBIO A MINÚSCULA
     item.ispagado = !item.ispagado; 
+  }
+
+  aplicarFechasATodos() {
+    if (this.listaResultados.length === 0) {
+      Swal.fire('Atención', 'No hay elementos para actualizar.', 'warning');
+      return;
+    }
+
+    if (!this.fechaCaducidadGlobal || !this.fechaEmisionGlobal) {
+      Swal.fire('Atención', 'Debes indicar la fecha de emisión y la fecha de caducidad.', 'warning');
+      return;
+    }
+
+    this.listaResultados = this.listaResultados.map((item) => ({
+      ...item,
+      fecReg: this.fechaEmisionGlobal,
+      fecCaduca: this.fechaCaducidadGlobal
+    }));
+
+    Swal.fire('Listo', 'Las fechas se aplicaron a todos los elementos.', 'success');
   }
 
   guardarCambios() {
