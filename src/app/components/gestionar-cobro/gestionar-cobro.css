@@ -19,7 +19,45 @@ h2 { color: #333; margin-bottom: 20px; border-bottom: 2px solid #007bff; padding
 .btn-buscar:disabled { background-color: #ccc; cursor: not-allowed; }
 
 /* BOTONES Y TABLA */
-.actions-bar { text-align: right; margin-bottom: 15px; }
+.actions-bar {
+  margin-bottom: 15px;
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.bulk-dates {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  flex-wrap: wrap;
+}
+.bulk-dates label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+  color: #333;
+}
+.bulk-dates input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  min-width: 170px;
+}
+.btn-aplicar-fechas {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+.btn-aplicar-fechas:hover { background-color: #138496; }
+.btn-aplicar-fechas:disabled { background-color: #ccc; cursor: not-allowed; }
 .btn-guardar { background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
 .btn-guardar:hover { background-color: #218838; }
 .btn-guardar:disabled { background-color: #ccc; cursor: not-allowed; }
