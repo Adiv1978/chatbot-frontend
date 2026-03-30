@@ -1,6 +1,7 @@
 export interface CobroListaDTO {
     id: number;
     fecReg: string;      // DateTime en C# llega como string ISO
+    fecEmitido?: string;
     nombre: string;
     direccion: string;
     telefono: string;
@@ -17,7 +18,8 @@ export interface CobroDTO {
     direccion: string;
     telefono: string;
     monto: number;
-    fecCaduca: string; 
+    fecCaduca: string;
+    fecEmitido?: string;
     isenviado: boolean;
     ispagado: boolean;
 }
